@@ -29,14 +29,14 @@ public class Snake extends JPanel{
     private static final Color snakeBlackedLine = new Color(200, 200, 200);
     private static final Color snakeColored = new Color(150, 0, 0);
     private static final Color snakeColoredLine = new Color(225, 240, 240);
-    private static AtomicBoolean showContols;
+    private static AtomicBoolean showControls;
     private static AtomicBoolean isLine;
     private static AtomicInteger turnSnake;
     private static ImageIcon grassImage;
     private static ImageIcon appleImage;
     private static int height, width;
     private static int gridsX, gridsY;
-    private static int dgree;
+    private static int degree;
     private static int gridLength;
     private static boolean isImageLoaded;
     private static boolean isAppleLoaded;
@@ -48,8 +48,8 @@ public class Snake extends JPanel{
     private static int score;
 
     public Snake() {
-        initializeVaribles();
-        grassImage = new ImageIcon("res//grass.jpg");
+        initializeVariables();
+        grassImage = ResourceLoader.getImageIcon("grass.jpg");
         {
             int i = grassImage.getImage().getWidth(null);
             int j = grassImage.getImage().getHeight(null);
@@ -57,7 +57,7 @@ public class Snake extends JPanel{
                 isImageLoaded = true;
             }
         }
-        appleImage = new ImageIcon("res//apple.png");
+        appleImage = ResourceLoader.getImageIcon("Apple.png");
         {
             int i = appleImage.getImage().getWidth(null);
             int j = appleImage.getImage().getHeight(null);
@@ -79,11 +79,11 @@ public class Snake extends JPanel{
         setPreferredSize(new Dimension(width, height));
     }
     
-    private void initializeVaribles() {
-        showContols = new AtomicBoolean(false);
+    private void initializeVariables() {
+        showControls = new AtomicBoolean(false);
         isLine = new AtomicBoolean(false);
         turnSnake = new AtomicInteger(DOWN);
-        dgree = 0;
+        degree = 0;
         isLoose = false;
         score = 0;
     }
@@ -91,7 +91,7 @@ public class Snake extends JPanel{
     private void addInitialPoints() {
         int x = gridLength * (gridsX - 3) + gridLength/2;
         int y = gridLength;
-        int sDgree = getStartingDegreeOf(turnSnake.get());
+        int sDegree = getStartingDegreeOf(turnSnake.get());
         boolean side = true;
         
         pArray = new ArrayList<SPoint>();
@@ -99,9 +99,9 @@ public class Snake extends JPanel{
 
         int j = 1;
         for (int i = 0; i < initialPoints; ++i, ++j) {
-            pArray.add(new SPoint(x, y, sDgree, side));
+            pArray.add(new SPoint(x, y, sDegree, side));
             setPointInUse(pArray.get(i), i, true);
-            // System.out.println("(" + x + ", " + y + ")" + " " + sDgree + " " + side);
+            // System.out.println("(" + x + ", " + y + ")" + " " + sDegree + " " + side);
 
             if(j % 2 == 0) {
                 if(turnSnake.get() == UP) {
@@ -118,18 +118,18 @@ public class Snake extends JPanel{
                 }
                 side = (side == true)? false : true;
             }
-            if(sDgree == 0 && side == false) {
-                sDgree = 360;
+            if(sDegree == 0 && side == false) {
+                sDegree = 360;
             }
-            else if(sDgree == 360 && side == true) {
-                sDgree = 0;
+            else if(sDegree == 360 && side == true) {
+                sDegree = 0;
             }
-            sDgree = (side == true)? sDgree + 90 : sDgree - 90;
-            if(sDgree == 0 && side == false) {
-                sDgree = 360;
+            sDegree = (side == true)? sDegree + 90 : sDegree - 90;
+            if(sDegree == 0 && side == false) {
+                sDegree = 360;
             }
-            else if(sDgree == 360 && side == true) {
-                sDgree = 0;
+            else if(sDegree == 360 && side == true) {
+                sDegree = 0;
             }
         }
     }
@@ -155,9 +155,6 @@ public class Snake extends JPanel{
         apPoints.add(new GPoint(x + len  , y + len  ));
         apPoints.add(new GPoint(x + len*2, y + len  ));
         apPoints.add(new GPoint(x + len  , y + len*2));
-        // for (int i = 0; i < apPoints.size(); i++) {
-        //     System.out.println("(" + apPoints.get(i).getX() + ", " + apPoints.get(i).getY() + ")");
-        // }
 
         for (int i = 0; i < apPoints.size(); i++) {
             for (int j = 0; j < pInUse.size(); j++) {
@@ -172,23 +169,23 @@ public class Snake extends JPanel{
     private void setPointInUse(SPoint spoint, int index, boolean isAdd) {
         int x = spoint.getX();
         int y = spoint.getY();
-        final int sDgree = spoint.getSDgree();
+        final int sDegree = spoint.getSDegree();
         final boolean side = spoint.getSide();
         final int len = gridLength/2;
 
-        int eDgree;
+        int eDegree;
         {
-            eDgree = (side == true)? sDgree + 90 : sDgree - 90;
-            if(eDgree == 0 || eDgree == 360) {
+            eDegree = (side == true)? sDegree + 90 : sDegree - 90;
+            if(eDegree == 0 || eDegree == 360) {
                 x = x + len;
             } 
-            else if(eDgree == 180) {
+            else if(eDegree == 180) {
                 x = x - len;
             }
-            else if(eDgree == 90) {
+            else if(eDegree == 90) {
                 y = y - len;
             }
-            else if(eDgree == 270) {
+            else if(eDegree == 270) {
                 y = y + len;
             }
         }
@@ -204,9 +201,9 @@ public class Snake extends JPanel{
     }
 
     public void updateSnake() {
-        dgree += 10;
+        degree += 10;
 
-        if(dgree == 90) {
+        if(degree == 90) {
             {
                 int x = pInUse.get(pInUse.size()-1).getX();
                 int y = pInUse.get(pInUse.size()-1).getY();
@@ -240,7 +237,7 @@ public class Snake extends JPanel{
                 pInUse.set(j, pInUse.get(j + 1));
             }
             setPointInUse(pArray.get(i), j, false);
-            dgree = 0;
+            degree = 0;
             isFirstChangePath = true;
         }
         repaint();
@@ -252,48 +249,48 @@ public class Snake extends JPanel{
         boolean side = pArray.get(pointNo).getSide();
         final int turn = turnSnake.get();
 
-        int sDgree = pArray.get(pointNo).getSDgree();
-        int eDgree = (side == true)? sDgree + 90 : sDgree - 90;
+        int sDegree = pArray.get(pointNo).getSDegree();
+        int eDegree = (side == true)? sDegree + 90 : sDegree - 90;
 
-        // System.out.println("(" + x + ", " + y + ")" + " " + sDgree + " " + eDgree + " " + side);
+        // System.out.println("(" + x + ", " + y + ")" + " " + sDegree + " " + eDegree + " " + side);
 
-        if((sDgree == 90 && eDgree == 0) || (sDgree == 270 && eDgree == 360)) {
+        if((sDegree == 90 && eDegree == 0) || (sDegree == 270 && eDegree == 360)) {
             if(turn == RIGHT) {
                 x = x + gridLength;
                 side = (side == true)? false : true;
-                eDgree = flipAngle(eDgree);
+                eDegree = flipAngle(eDegree);
             }
         }
-        else if((sDgree == 360 && eDgree == 270) || (sDgree == 180 && eDgree == 270)) {
+        else if((sDegree == 360 && eDegree == 270) || (sDegree == 180 && eDegree == 270)) {
             if(turn == DOWN) {
                 y = y + gridLength;
                 side = (side == true)? false : true;
-                eDgree = flipAngle(eDgree);
+                eDegree = flipAngle(eDegree);
             }
         }
-        else if((sDgree == 90 && eDgree == 180) || (sDgree == 270 && eDgree == 180)) {
+        else if((sDegree == 90 && eDegree == 180) || (sDegree == 270 && eDegree == 180)) {
             if(turn == LEFT) {
                 x = x - gridLength;
                 side = (side == true)? false : true;
-                eDgree = flipAngle(eDgree);
+                eDegree = flipAngle(eDegree);
             }
         }
-        else if((sDgree == 180 && eDgree == 90) || (sDgree == 0 && eDgree == 90)) {
+        else if((sDegree == 180 && eDegree == 90) || (sDegree == 0 && eDegree == 90)) {
             if(turn == UP) {
                 y = y - gridLength;
                 side = (side == true)? false : true;
-                eDgree = flipAngle(eDgree);
+                eDegree = flipAngle(eDegree);
             }
         }
-        if(eDgree == 0 && side == false) {
-            eDgree = 360;
+        if(eDegree == 0 && side == false) {
+            eDegree = 360;
         }
-        else if(eDgree == 360 && side == true) {
-            eDgree = 0;
+        else if(eDegree == 360 && side == true) {
+            eDegree = 0;
         }
-        // System.out.println("(" + x + ", " + y + ")" + " " + sDgree + " " + eDgree + " " + side);
+        // System.out.println("(" + x + ", " + y + ")" + " " + sDegree + " " + eDegree + " " + side);
         // System.out.println("");
-        pArray.set(pointNo, new SPoint(x, y, eDgree, side));
+        pArray.set(pointNo, new SPoint(x, y, eDegree, side));
     }
 
     private int flipAngle(int angle) {
@@ -307,10 +304,10 @@ public class Snake extends JPanel{
     }
 
     public static void setShowControls(boolean value) {
-        showContols.set(value);
+        showControls.set(value);
     }
     public static boolean getShowControls() {
-        return showContols.get();
+        return showControls.get();
     }
 
     public static void setIsLine(boolean value) {
@@ -348,33 +345,33 @@ public class Snake extends JPanel{
         int y = point.getY();
         boolean side = point.getSide();
 
-        int sDgree = point.getSDgree();
-        int eDgree = (side == true)? sDgree + 90 : sDgree - 90;
+        int sDegree = point.getSDegree();
+        int eDegree = (side == true)? sDegree + 90 : sDegree - 90;
 
-        if((sDgree == 90 && eDgree == 0 && (turn == UP))  || (sDgree == 90 && eDgree == 180 && (turn == UP))) {
+        if((sDegree == 90 && eDegree == 0 && (turn == UP))  || (sDegree == 90 && eDegree == 180 && (turn == UP))) {
             y = y - gridLength;
-            sDgree = 270;
+            sDegree = 270;
             side = (side == true)? false : true;
         }
-        else if((sDgree == 0 && eDgree == 90 && (turn == RIGHT)) || (sDgree == 360 && eDgree == 270 && (turn == RIGHT))) {
+        else if((sDegree == 0 && eDegree == 90 && (turn == RIGHT)) || (sDegree == 360 && eDegree == 270 && (turn == RIGHT))) {
             x = x + gridLength;
-            sDgree = 180;
+            sDegree = 180;
             side = (side == true)? false : true;
         }
-        else if((sDgree == 270 && eDgree == 180 && (turn == DOWN)) || (sDgree == 270 && eDgree == 360 && (turn == DOWN))) {
+        else if((sDegree == 270 && eDegree == 180 && (turn == DOWN)) || (sDegree == 270 && eDegree == 360 && (turn == DOWN))) {
             y = y + gridLength;
-            sDgree = 90;
+            sDegree = 90;
             side = (side == true)? false : true;
         }
-        else if((sDgree == 180 && eDgree == 90 && (turn == LEFT)) || (sDgree == 180 && eDgree == 270 && (turn == LEFT))) {
+        else if((sDegree == 180 && eDegree == 90 && (turn == LEFT)) || (sDegree == 180 && eDegree == 270 && (turn == LEFT))) {
             x = x - gridLength;
-            sDgree = (side == true)? 360 : 0;
+            sDegree = (side == true)? 360 : 0;
             side = (side == true)? false : true;
         }
 
         point.setX(x);
         point.setY(y);
-        point.setSDgree(sDgree);
+        point.setSDegree(sDegree);
         point.setSide(side);
         pArray.set(pointNo, point);
         setPointInUse(pArray.get(pointNo), pointNo, false);
@@ -385,7 +382,7 @@ public class Snake extends JPanel{
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
 
-        if(showContols.get()) {
+        if(showControls.get()) {
             g2d.setPaint(new Color(240, 240, 240));
             g2d.fillRect(0, 0, width, height);
 
@@ -445,41 +442,41 @@ public class Snake extends JPanel{
     
             int x, y;
             int len = gridLength;
-            int sDgree;
+            int sDegree;
             boolean side;
            for (int i = 0; i < pArray.size(); i++)
             {
                 x = pArray.get(i).getX();
                 y = pArray.get(i).getY();
-                sDgree = pArray.get(i).getSDgree();
+                sDegree = pArray.get(i).getSDegree();
                 side = pArray.get(i).getSide();
     
                 if(i == 0) {
-                    int start = (side == true)? sDgree + dgree : sDgree - dgree;
+                    int start = (side == true)? sDegree + degree : sDegree - degree;
     
-                    int dgreeLen = (side == true)? (90 - dgree) : -(90 - dgree);
+                    int degreeLen = (side == true)? (90 - degree) : -(90 - degree);
     
-                    g2d.drawArc(x, y, len, len, start, dgreeLen);
+                    g2d.drawArc(x, y, len, len, start, degreeLen);
                 }
                 else if(i == pArray.size() - 1) {
-                    g2d.drawArc(x, y, len, len, sDgree, (side == true)? dgree : -dgree);
+                    g2d.drawArc(x, y, len, len, sDegree, (side == true)? degree : -degree);
                 }
                 else {
-                    g2d.drawArc(x, y, len, len, sDgree, (side == true)? 90 : -90);
+                    g2d.drawArc(x, y, len, len, sDegree, (side == true)? 90 : -90);
                 }
             }
         }
         else {
 
             int x, y;
-            int sDgree;
+            int sDegree;
             boolean side;
             int len;
             
             len = gridLength;
 
-            final Color snakeSkinColor = (showContols.get())? snakeBlacked : snakeColored;
-            final Color snakeLineColor = (showContols.get())? snakeBlackedLine : snakeColoredLine;
+            final Color snakeSkinColor = (showControls.get())? snakeBlacked : snakeColored;
+            final Color snakeLineColor = (showControls.get())? snakeBlackedLine : snakeColoredLine;
             g2d.setPaint(snakeSkinColor);
             g2d.setStroke(new BasicStroke(13));
 
@@ -487,7 +484,7 @@ public class Snake extends JPanel{
             {
                 x = pArray.get(i).getX();
                 y = pArray.get(i).getY();
-                sDgree = pArray.get(i).getSDgree();
+                sDegree = pArray.get(i).getSDegree();
                 side = pArray.get(i).getSide();
     
                 if(i == 0 || i == 1 || i == 2) {
@@ -495,11 +492,11 @@ public class Snake extends JPanel{
                 }
                 else if(i == pArray.size() - 1) {
                     g2d.setStroke(new BasicStroke(13));
-                    g2d.drawArc(x, y, len, len, sDgree, (side == true)? dgree : -dgree);
+                    g2d.drawArc(x, y, len, len, sDegree, (side == true)? degree : -degree);
                 }
                 else {
                     g2d.setStroke(new BasicStroke(13));
-                    g2d.drawArc(x, y, len, len, sDgree, (side == true)? 90 : -90);
+                    g2d.drawArc(x, y, len, len, sDegree, (side == true)? 90 : -90);
                 }
             }
 
@@ -512,19 +509,19 @@ public class Snake extends JPanel{
             {
                 x = pArray.get(i).getX();
                 y = pArray.get(i).getY();
-                sDgree = pArray.get(i).getSDgree();
+                sDegree = pArray.get(i).getSDegree();
                 side = pArray.get(i).getSide();
     
                 if(i == 0) {
-                    // int start = (side == true)? sDgree + dgree : sDgree - dgree;
-                    // int dgreeLen = (side == true)? (90 - dgree) : -(90 - dgree);
-                    // g2d.drawArc(x, y, len, len, start, dgreeLen);
+                    // int start = (side == true)? sDegree + degree : sDegree - degree;
+                    // int degreeLen = (side == true)? (90 - degree) : -(90 - degree);
+                    // g2d.drawArc(x, y, len, len, start, degreeLen);
                 }
                 else if(i == pArray.size() - 1) {
-                    g2d.drawArc(x, y, len, len, sDgree, (side == true)? dgree : -dgree);
+                    g2d.drawArc(x, y, len, len, sDegree, (side == true)? degree : -degree);
                 }
                 else {
-                    g2d.drawArc(x, y, len, len, sDgree, (side == true)? 90 : -90);
+                    g2d.drawArc(x, y, len, len, sDegree, (side == true)? 90 : -90);
                 }
             }
 
@@ -534,73 +531,73 @@ public class Snake extends JPanel{
             final int lPoint = pArray.size()-1;
             x = pArray.get(lPoint).getX() + gridLength/2;
             y = pArray.get(lPoint).getY() + gridLength/2;
-            sDgree = pArray.get(lPoint).getSDgree();
+            sDegree = pArray.get(lPoint).getSDegree();
             side = pArray.get(lPoint).getSide();
 
-            int eDgree = (side == true)? (dgree) : -(dgree);
-            int pointX = x + (int) ((gridLength/2 + 1) * Math.cos(Math.toRadians(sDgree + eDgree)));
-            int pointY = y - (int) ((gridLength/2 + 1) * Math.sin(Math.toRadians(sDgree + eDgree)));
+            int eDegree = (side == true)? (degree) : -(degree);
+            int pointX = x + (int) ((gridLength/2 + 1) * Math.cos(Math.toRadians(sDegree + eDegree)));
+            int pointY = y - (int) ((gridLength/2 + 1) * Math.sin(Math.toRadians(sDegree + eDegree)));
             g2d.fillOval(pointX - 9, pointY - 9, 18, 18);
 
             final int angleGap = 30;
-            if(dgree >= angleGap) {
-                eDgree = (side == true)? (dgree - angleGap) : -(dgree - angleGap);
-                pointX = x + (int) ((gridLength/2 + 1) * Math.cos(Math.toRadians(sDgree + eDgree)));
-                pointY = y - (int) ((gridLength/2 + 1) * Math.sin(Math.toRadians(sDgree + eDgree)));
+            if(degree >= angleGap) {
+                eDegree = (side == true)? (degree - angleGap) : -(degree - angleGap);
+                pointX = x + (int) ((gridLength/2 + 1) * Math.cos(Math.toRadians(sDegree + eDegree)));
+                pointY = y - (int) ((gridLength/2 + 1) * Math.sin(Math.toRadians(sDegree + eDegree)));
                 g2d.fillOval(pointX - 12, pointY - 12, 24, 24);
             }
             else {
                 final int l2Point = pArray.size()-2;
                 x = pArray.get(l2Point).getX() + gridLength/2;
                 y = pArray.get(l2Point).getY() + gridLength/2;
-                sDgree = pArray.get(l2Point).getSDgree();
+                sDegree = pArray.get(l2Point).getSDegree();
                 side = pArray.get(l2Point).getSide();
     
-                eDgree = (side == true)? (dgree + (90-angleGap)) : -(dgree + (90-angleGap));
-                pointX = x + (int) ((gridLength/2 + 1) * Math.cos(Math.toRadians(sDgree + eDgree)));
-                pointY = y - (int) ((gridLength/2 + 1) * Math.sin(Math.toRadians(sDgree + eDgree)));
+                eDegree = (side == true)? (degree + (90-angleGap)) : -(degree + (90-angleGap));
+                pointX = x + (int) ((gridLength/2 + 1) * Math.cos(Math.toRadians(sDegree + eDegree)));
+                pointY = y - (int) ((gridLength/2 + 1) * Math.sin(Math.toRadians(sDegree + eDegree)));
                 g2d.fillOval(pointX - 12, pointY - 12, 24, 24);
             }
 
             g2d.setPaint(snakeLineColor);
             final int eyeAngle = 15;
             final int eyePixelGap = 8;
-            if(dgree >= eyeAngle) {
+            if(degree >= eyeAngle) {
                 final int point = pArray.size()-1;
                 x = pArray.get(point).getX() + gridLength/2;
                 y = pArray.get(point).getY() + gridLength/2;
-                sDgree = pArray.get(point).getSDgree();
+                sDegree = pArray.get(point).getSDegree();
                 side = pArray.get(point).getSide();
 
                 int length = gridLength/2 + 1 + eyePixelGap/2;
-                eDgree = (side == true)? (dgree - eyeAngle) : -(dgree - eyeAngle);
-                pointX = x + (int) (length * Math.cos(Math.toRadians(sDgree + eDgree)));
-                pointY = y - (int) (length * Math.sin(Math.toRadians(sDgree + eDgree)));
+                eDegree = (side == true)? (degree - eyeAngle) : -(degree - eyeAngle);
+                pointX = x + (int) (length * Math.cos(Math.toRadians(sDegree + eDegree)));
+                pointY = y - (int) (length * Math.sin(Math.toRadians(sDegree + eDegree)));
                 g2d.fillOval(pointX - 2, pointY - 2, 4, 4);
 
                 length = gridLength/2 + 1 - eyePixelGap/2;
-                eDgree = (side == true)? (dgree - eyeAngle) : -(dgree - eyeAngle);
-                pointX = x + (int) (length * Math.cos(Math.toRadians(sDgree + eDgree)));
-                pointY = y - (int) (length * Math.sin(Math.toRadians(sDgree + eDgree)));
+                eDegree = (side == true)? (degree - eyeAngle) : -(degree - eyeAngle);
+                pointX = x + (int) (length * Math.cos(Math.toRadians(sDegree + eDegree)));
+                pointY = y - (int) (length * Math.sin(Math.toRadians(sDegree + eDegree)));
                 g2d.fillOval(pointX - 2, pointY - 2, 4, 4);
             }
             else {
                 final int l2Point = pArray.size()-2;
                 x = pArray.get(l2Point).getX() + gridLength/2;
                 y = pArray.get(l2Point).getY() + gridLength/2;
-                sDgree = pArray.get(l2Point).getSDgree();
+                sDegree = pArray.get(l2Point).getSDegree();
                 side = pArray.get(l2Point).getSide();
 
                 int length = gridLength/2 + 1 + eyePixelGap/2;
-                eDgree = (side == true)? (dgree + (90-eyeAngle)) : -(dgree + (90-eyeAngle));
-                pointX = x + (int) (length * Math.cos(Math.toRadians(sDgree + eDgree)));
-                pointY = y - (int) (length * Math.sin(Math.toRadians(sDgree + eDgree)));
+                eDegree = (side == true)? (degree + (90-eyeAngle)) : -(degree + (90-eyeAngle));
+                pointX = x + (int) (length * Math.cos(Math.toRadians(sDegree + eDegree)));
+                pointY = y - (int) (length * Math.sin(Math.toRadians(sDegree + eDegree)));
                 g2d.fillOval(pointX - 2, pointY - 2, 4, 4);
 
                 length = gridLength/2 + 1 - eyePixelGap/2;
-                eDgree = (side == true)? (dgree + (90-eyeAngle)) : -(dgree + (90-eyeAngle));
-                pointX = x + (int) (length * Math.cos(Math.toRadians(sDgree + eDgree)));
-                pointY = y - (int) (length * Math.sin(Math.toRadians(sDgree + eDgree)));
+                eDegree = (side == true)? (degree + (90-eyeAngle)) : -(degree + (90-eyeAngle));
+                pointX = x + (int) (length * Math.cos(Math.toRadians(sDegree + eDegree)));
+                pointY = y - (int) (length * Math.sin(Math.toRadians(sDegree + eDegree)));
                 g2d.fillOval(pointX - 2, pointY - 2, 4, 4);
             }
         }
@@ -626,7 +623,7 @@ public class Snake extends JPanel{
 
     private void printTail(Graphics2D g2d, int i) {
         int x, y;
-        int sDgree;
+        int sDegree;
         boolean side;
         int len;
         
@@ -634,96 +631,96 @@ public class Snake extends JPanel{
 
         x = pArray.get(i).getX();
         y = pArray.get(i).getY();
-        sDgree = pArray.get(i).getSDgree();
+        sDegree = pArray.get(i).getSDegree();
         side = pArray.get(i).getSide();
 
         if(i == 0) {
             int d;
             int start = 0;
-            int dgreeLen = 0;
+            int degreeLen = 0;
             boolean print = true;
             for (int j = 1; j <= 6; j++) {
                 print = true;
-                if( dgree >= 90-(j-1)*15 ) {
+                if( degree >= 90-(j-1)*15 ) {
                     print = false;
                 }
                 else {
-                    d = dgree + (j-1)*15;
-                    start = (side == true)? sDgree + d : sDgree - d;
+                    d = degree + (j-1)*15;
+                    start = (side == true)? sDegree + d : sDegree - d;
 
-                    d = (90 - (j-1) * 15) - dgree;
-                    dgreeLen = (side == true)? d : -d;
+                    d = (90 - (j-1) * 15) - degree;
+                    degreeLen = (side == true)? d : -d;
                 }
 
                 if(print) {
                     g2d.setStroke(new BasicStroke(j));
-                    g2d.drawArc(x, y, len, len, start, dgreeLen);
+                    g2d.drawArc(x, y, len, len, start, degreeLen);
                 }
             }
         }
         else if(i == 1) {
             int d;
             int start = 0;
-            int dgreeLen = 0;
+            int degreeLen = 0;
             boolean print = true;
 
             for (int j = 7; j <= 12; j++) {
                 print = true;
-                if( dgree >= 90-(j-6)*15 ) {
+                if( degree >= 90-(j-6)*15 ) {
                     print = false;
                 }
                 else {
-                    d = dgree + (j-6)*15;
-                    start = (side == true)? sDgree + d : sDgree - d;
+                    d = degree + (j-6)*15;
+                    start = (side == true)? sDegree + d : sDegree - d;
 
-                    d = (90 - (j-6) * 15) - dgree;
-                    dgreeLen = (side == true)? d : -d;
+                    d = (90 - (j-6) * 15) - degree;
+                    degreeLen = (side == true)? d : -d;
                 }
 
                 if(print) {
                     g2d.setStroke(new BasicStroke(j));
-                    g2d.drawArc(x, y, len, len, start, dgreeLen);
+                    g2d.drawArc(x, y, len, len, start, degreeLen);
                 }
             }
             for (int j = 1; j <= 6; j++) {
-                if(dgree > (90 - (j-1)*15) ) {
-                    d = dgree - (90 - (j-1)*15);
-                    start = (side == true)? sDgree + d : sDgree - d;
+                if(degree > (90 - (j-1)*15) ) {
+                    d = degree - (90 - (j-1)*15);
+                    start = (side == true)? sDegree + d : sDegree - d;
                     d = (j-1) * 15;
-                    dgreeLen = (side == true)? (90 - d) : -(90 - d);
+                    degreeLen = (side == true)? (90 - d) : -(90 - d);
                 }
                 else {
-                    d = dgree;
-                    start = sDgree;
-                    dgreeLen = (side == true)? d : -d;
+                    d = degree;
+                    start = sDegree;
+                    degreeLen = (side == true)? d : -d;
                 }
 
                 g2d.setStroke(new BasicStroke(j));
-                g2d.drawArc(x, y, len, len, start, dgreeLen);
+                g2d.drawArc(x, y, len, len, start, degreeLen);
             }
         }
         else if(i == 2) {
-            int start = (side == true)? sDgree + dgree : sDgree - dgree;
-            int dgreeLen = (side == true)? (90 - dgree) : -(90 - dgree);
+            int start = (side == true)? sDegree + degree : sDegree - degree;
+            int degreeLen = (side == true)? (90 - degree) : -(90 - degree);
             g2d.setStroke(new BasicStroke(13));
-            g2d.drawArc(x, y, len, len, start, dgreeLen);
+            g2d.drawArc(x, y, len, len, start, degreeLen);
 
             int d;
             for (int j = 7; j <= 12; j++) {
-                if(dgree > (90 - (j-6)*15) ) {
-                    d = dgree - (90 - (j-6)*15);
-                    start = (side == true)? sDgree + d : sDgree - d;
+                if(degree > (90 - (j-6)*15) ) {
+                    d = degree - (90 - (j-6)*15);
+                    start = (side == true)? sDegree + d : sDegree - d;
                     d = (j-6) * 15;
-                    dgreeLen = (side == true)? (90 - d) : -(90 - d);
+                    degreeLen = (side == true)? (90 - d) : -(90 - d);
                 }
                 else {
-                    d = dgree;
-                    start = sDgree;
-                    dgreeLen = (side == true)? d : -d;
+                    d = degree;
+                    start = sDegree;
+                    degreeLen = (side == true)? d : -d;
                 }
 
                 g2d.setStroke(new BasicStroke(j));
-                g2d.drawArc(x, y, len, len, start, dgreeLen);
+                g2d.drawArc(x, y, len, len, start, degreeLen);
             }
         }
 
@@ -734,14 +731,14 @@ public class Snake extends JPanel{
         Controler.stopSnaku();
 
         final int dailogHeight = 180;
-        Color color = (showContols.get())? new Color(0, 0, 0, 100) : new Color(255, 255, 255, 150);
+        Color color = (showControls.get())? new Color(0, 0, 0, 100) : new Color(255, 255, 255, 150);
         g2d.setPaint(color);
         g2d.fillRect(0, height/2 - dailogHeight/2, width, dailogHeight);
         
         setFont(new Font("", Font.BOLD, 45));
         FontMetrics f_metrics = getFontMetrics(getFont());
         int textHeight = f_metrics.getHeight() - f_metrics.getDescent();
-        color = (showContols.get())? new Color(255, 255, 255, 220) : new Color(0, 0, 0, 150);
+        color = (showControls.get())? new Color(255, 255, 255, 220) : new Color(0, 0, 0, 150);
         g2d.setPaint(color);
         
         int sideGap = width/2 - 120;
@@ -774,13 +771,13 @@ public class Snake extends JPanel{
         private int x;
         private int y;
         private boolean side;
-        private int sDgree;
+        private int sDegree;
 
-        private SPoint(int x, int y, int sDgree, boolean side) {
+        private SPoint(int x, int y, int sDegree, boolean side) {
             this.x = x;
             this.y = y;
             this.side = side;
-            this.sDgree = sDgree;
+            this.sDegree = sDegree;
         }
 
         public int getX() {
@@ -789,8 +786,8 @@ public class Snake extends JPanel{
         public int getY() {
             return y;
         }
-        public int getSDgree() {
-            return sDgree;
+        public int getSDegree() {
+            return sDegree;
         }
         public boolean getSide() {
             return side;
@@ -802,8 +799,8 @@ public class Snake extends JPanel{
         public void setY(int y) {
             this.y = y;
         }
-        public void setSDgree(int sDgree) {
-            this.sDgree = sDgree;
+        public void setSDegree(int sDegree) {
+            this.sDegree = sDegree;
         }
         public void setSide(boolean side) {
             this.side = side;

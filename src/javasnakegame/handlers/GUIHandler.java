@@ -74,10 +74,10 @@ public class GUIHandler {
         lineButton = new MyButton(" ", 134, 40, font);
         speedButton = new MyButton(" ", 134, 40, font);
         {
-            Icon rightArrow = new ImageIcon("res//Right-Arrow.png");
-            Icon leftArrow = new ImageIcon("res//Left-Arrow.png");
-            Icon upArrow = new ImageIcon("res//Up-Arrow.png");
-            Icon downArrow = new ImageIcon("res//Down-Arrow.png");
+            Icon rightArrow = ResourceLoader.getImageIcon("Right-Arrow.png");
+            Icon leftArrow = ResourceLoader.getImageIcon("Left-Arrow.png");
+            Icon upArrow = ResourceLoader.getImageIcon("Up-Arrow.png");
+            Icon downArrow = ResourceLoader.getImageIcon("Down-Arrow.png");
             int i1 = upArrow.getIconWidth();
             int j1 = upArrow.getIconHeight();
             int i2 = downArrow.getIconWidth();
@@ -98,10 +98,10 @@ public class GUIHandler {
                 rightButton = new MyButton(rightArrow, 39, 39, font);
             }
             else {
-                upButton = new MyButton("^", 39, 39, font);
-                downButton = new MyButton("_", 39, 39, font);
-                leftButton = new MyButton("<", 39, 39, font);
-                rightButton = new MyButton(">", 39, 39, font);
+                leftButton = new MyButton("\u1F860", 39, 39, font);
+                upButton = new MyButton("\u1F861", 39, 39, font);
+                rightButton = new MyButton("\u1F862", 39, 39, font);
+                downButton = new MyButton("\u1F863", 39, 39, font);
             }
         }
         pauseButton.setEnabled(false);
@@ -112,7 +112,7 @@ public class GUIHandler {
         scoreLabel.setFont(new Font(font.getFamily(), Font.BOLD, font.getSize()+2));
 
         isShowingCtrl = Snake.getShowControls();
-        bkImage = new ImageIcon("res//Wood-Texture.jpg");
+        bkImage = ResourceLoader.getImageIcon("Wood-Texture.jpg");
         {
             String text;
             if(isShowingCtrl) {
